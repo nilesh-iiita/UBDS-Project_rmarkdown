@@ -47,3 +47,19 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# custom
+.Rproj.user
+.Rhistory
+.RData
+.rds
+.Ruserdata
+.DS_Store
+.bash_history
+.local
+.config
+data/*
+Data/*
+results/*
+/logs/* !logs/.gitkeep /tmp *.swp
+*cache/*
