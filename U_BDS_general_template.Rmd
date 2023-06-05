@@ -1,0 +1,91 @@
+---
+title: "Title"
+author: 
+  - name: "Add your name | add your email | <https://www.uab.edu/cores/ircp/bds>"
+date: "Add date"
+output:
+  html_document:
+    css: "style.css"
+    toc: true
+    toc_float: true
+    includes:
+      after_body: "U_BDS_authorship_note.html"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+Overview of tasks for tertiary analysis or points relevant to summary report should be summarized at the top of the report.
+
+* Note that for each project at least 2 R markdown reports should be present:
+  * __Analysis report for tertiary analysis:__ this should be the entire analysis code with outputs present in the rmakrdown for proper review. This should remain as internal/private until discussed with the investigator/when we agree on publication procedures
+  * __Summary report:__ this should be a summary report to be shared with the PI/lab where it highlights file path locations for outputs, any concern noted with the data etc.
+  * Examples of both can be found for example in (summary report markdown in the `summary_report` subdirectory):
+    * bulk RNA-seq: https://gitlab.rc.uab.edu/u_bds/projects/goldberg_matthew_001_2021
+    * snATAC-seq: https://gitlab.rc.uab.edu/u_bds/projects/lubin_farah_001_2022
+    * Ask Dr. Lara Ianov for more examples/direction when needed
+    
+NOTE: the `U_BDS_authorship_note.html` (after the body of the report) which is included here is typically used in the summary report shared with the PI/lab (or any other analysis when shared). For internal code/analysis, it doesn't need to be included.
+
+# Project structure
+
+In addition to version control etc. the structure of the projects follows the basic concepts shown at the first couple of lessons from the R carpentry material we teach at the core: https://swcarpentry.github.io/r-novice-gapminder/02-project-intro/index.html
+
+Thus this includes at the very minimum:
+
+* Implementation of the RStudio project management functionality. Thus, every git repo linked to analysis should have a `.Rproj` file.
+* A `./results` and a `./data` directory.
+* The data in both directories above are not committed to git repositories due to size (ignored in `.gitignore`), but locations to data inputs and resulting files should be clearly listed in the `README.md` of the repository and in the rmakrdown as well. This may be a link to the Wrike project where paths are found within tasks and/or direct links to to Box and or U-BDS Cheaha directory.
+* Commit and push often to avoid loss of information.
+
+# Packages loaded globabally and custom functions
+```{r message=FALSE}
+# Required packages and set seed
+# EXAMPLE: change as needed....
+set.seed(1234)
+library(Seurat)
+library(dplyr)
+library(ggplot2)
+library(AnnotationHub)
+
+# custom function(s)
+# plot_output(): wraps saving of png/pdf in a single function and evaluates to be shown in report
+plot_output <- function(p, file_name, w_png=700, h_png=600, w_pdf=12, h_pdf=8){
+    
+    png(paste0(file_name,".png"), width = w_png, height = h_png)
+    plot(eval(p))
+    dev.off()
+    
+    pdf(paste0(file_name,".pdf"), width = w_pdf, height = h_pdf)
+    plot(eval(p))
+    dev.off()
+    
+    eval(p)
+}
+
+# make results directory in case it doesn't exist
+
+dir.create("./results", showWarnings = FALSE)
+
+```
+
+# Start analysis
+
+Write any descriptions as you see fit (again review examples above when needed). Note that for single-cell analysis you may not want to re-run all code during compilation of report. If there are tasks that are time consuming (e.g.: peak calling with MACS2), it's ok to set `eval=FALSE` as long as the code written saves the appropriate outputs including the R object itself. Once time consuming steps are performed, when possible, load the object in the R markdown and continue to include execution of outputs where possible (again, you will see some of this in the examples above and when in doubt ask Dr. Lara Ianov).
+
+
+```{r}
+print("Your analysis starts here")
+```
+
+
+# `sessionInfo`
+
+This should always be present at the end of your analysis!
+
+```{r}
+sessionInfo()
+```
